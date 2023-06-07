@@ -12,6 +12,7 @@ import za.co.etalente.service.FilePDFMetadataService;
 import javax.transaction.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 @Service
 public class FilePDFMetadataServiceImpl implements FilePDFMetadataService {
@@ -33,6 +34,7 @@ public class FilePDFMetadataServiceImpl implements FilePDFMetadataService {
         pdfFile.setCsvFileInput(csvFileInput);
         pdfFile.setPdfFileOutput(pdfFileOutput);
         pdfFile.setFileDestination(fileDestination);
+        pdfFile.setCreatedDate(new Date());
     }
 
     @Override

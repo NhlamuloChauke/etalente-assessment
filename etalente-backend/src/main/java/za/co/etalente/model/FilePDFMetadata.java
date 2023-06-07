@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @NoArgsConstructor
 @Entity
@@ -28,4 +29,7 @@ public class FilePDFMetadata {
 
     @Column(nullable = false)
     private String fileDestination;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
 }
