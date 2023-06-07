@@ -3,6 +3,7 @@ package za.co.etalente.service.implementation;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -16,10 +17,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 @Service
-@AllArgsConstructor
 public class FilePDFMetadataServiceImpl implements FilePDFMetadataService {
 
-    private final FilePDFMetadataRepo filePDFMetadataRepo;
+    @Value("${etalent-bucket-test}")
+    private String bucketName;
+
+    final
+    FilePDFMetadataRepo filePDFMetadataRepo;
+
+    public FilePDFMetadataServiceImpl(FilePDFMetadataRepo filePDFMetadataRepo) {
+        this.filePDFMetadataRepo = filePDFMetadataRepo;
+    }
 
     @Override
     public void savePdfFileDetails(String username, String csvFileInput, String pdfFileOutput,  String fileDestination) {
@@ -31,11 +39,11 @@ public class FilePDFMetadataServiceImpl implements FilePDFMetadataService {
     }
 
     @Override
-    public String uploadToS3(byte[] pdfBytes) {
+    public String uploadToS3(byte[] pdfBytes, String generatedPDF) {
         S3Client s3Client = S3Client.create();
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket("your-bucket-name")
-                .key("generated.pdf")
+                .bucket(bucketName)
+                .key(generatedPDF)
                 .contentType("application/pdf")
                 .build();
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(pdfBytes));
@@ -58,7 +66,7 @@ public class FilePDFMetadataServiceImpl implements FilePDFMetadataService {
     @Transactional
     public void generatePdfAndUploadToS3(String csvContent, String username, String pdfOutput) {
         byte[] pdfBytes = generatePdf(csvContent);
-        String fileDestination = uploadToS3(pdfBytes);
+        String fileDestination = uploadToS3(pdfBytes, pdfOutput);
         savePdfFileDetails(username,
                            csvContent,
                            pdfOutput,
