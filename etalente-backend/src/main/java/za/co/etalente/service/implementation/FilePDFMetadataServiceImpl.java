@@ -35,6 +35,7 @@ public class FilePDFMetadataServiceImpl implements FilePDFMetadataService {
         pdfFile.setPdfFileOutput(pdfFileOutput);
         pdfFile.setFileDestination(fileDestination);
         pdfFile.setCreatedDate(new Date());
+        filePDFMetadataRepo.save(pdfFile);
     }
 
     @Override
